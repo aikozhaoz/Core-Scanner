@@ -21,7 +21,7 @@ class Main {
 		}
 		// Deal with error token:
 		if(S.currentToken()==Core.ERROR){
-			System.out.print("ERROR: Invalid token!");
+			System.out.println("ERROR: Invalid token!");
 			System.out.print("Invalid token: "+ S.errortoken);
 		}
 	}
