@@ -33,7 +33,6 @@ class Scanner {
 	}
 
 	// Tokenizer: Form tokens(words) from parsing through chars list
-	int temp = 0;
 
 	public void tokenize(ArrayList<Character> chars) {
 		int anchor = 0;
@@ -90,7 +89,9 @@ class Scanner {
 							anchor--;
 						}
 					}
-				} else {
+				} 
+				// Case: when current character is anillegal character
+				else {
 					anchor=i+1;
 					this.errortoken += c;
 					currentword = "error";
