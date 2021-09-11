@@ -1,0 +1,59 @@
+
+program int X , Y , XY 	;
+
+          input X, Y, XY;
+		  
+		  if !(X = Y)
+		  then
+			if X < Y
+			then
+				output 1;
+			else
+				output 2;
+			endif;
+		output 3;
+		endif;
+		  
+		input X, Y, XY;
+		  
+		  if !(X = Y)
+		  then
+			if X < Y
+			then
+				output 10;
+			else
+				output 20;
+			endif;
+		output 30;
+		endif;
+		
+		input X, Y, XY;
+		  
+		  if !(X = Y)
+		  then
+			if X < Y
+			then
+				output 100;
+			else
+				output 200;
+			endif;
+		output 300;
+		endif;
+
+		input X, Y, XY;
+		  
+		if X = Y 
+		then
+			output 199;
+		else
+			if !(X <= Y)
+			then
+				output 299;
+			else
+				output 399;
+			endif;
+		endif;
+		
+		
+          end  
+      

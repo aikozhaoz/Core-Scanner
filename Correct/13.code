@@ -1,0 +1,1 @@
+program int x, y, z; A (a, b, c) begin a = b < c; endfunc begin input x, y, z; A (x, y, z); end

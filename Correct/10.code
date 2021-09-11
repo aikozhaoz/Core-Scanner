@@ -1,0 +1,1 @@
+if (x == y) then input x; else output x;

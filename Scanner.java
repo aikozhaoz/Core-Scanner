@@ -29,7 +29,6 @@ class Scanner {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	// Tokenizer: Form tokens(words) from parsing through chars list
@@ -39,7 +38,7 @@ class Scanner {
 		for (int i = 0; i < chars.size(); i++) {
 			char c = chars.get(i);
 			// Start to form tokens only if the current char is not a whitespace
-			if (!Character.isWhitespace(c)) {
+			if (!Character.isWhitespace(c) && i+1<chars.size()) {
 				String currentword = "" + c;
 				// Case: when current character is a letter
 				if (Character.isLetter(c)) {
@@ -80,6 +79,7 @@ class Scanner {
 					int j = i + 1;
 					if (j < chars.size()) {
 						anchor = j;
+						// System.out.println(anchor);
 						char nextc = chars.get(j);
 						if (c == '=' && nextc == '=') {
 							currentword += nextc;
@@ -88,17 +88,17 @@ class Scanner {
 						} else {
 							anchor--;
 						}
+					}// Case: when current character is anillegal character
+					else {
+						anchor=i+1;
+						this.errortoken += c;
+						currentword = "error";
 					}
-				} 
-				// Case: when current character is anillegal character
-				else {
-					anchor=i+1;
-					this.errortoken += c;
-					currentword = "error";
 				}
 				this.tokens.add(currentword);
 				// Update i with anchor
 				i = anchor;
+
 			}
 		}
 		tokens.add("eof");
