@@ -23,6 +23,7 @@ class Main {
 		if(S.currentToken()==Core.ERROR){
 			System.out.println("ERROR: Invalid token!");
 			System.out.print("Invalid token: "+ S.errortoken);
+			System.out.println();
 		}
 	}
 }

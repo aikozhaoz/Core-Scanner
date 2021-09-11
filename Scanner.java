@@ -32,54 +32,65 @@ class Scanner {
 	}
 
 	// Tokenizer: Form tokens(words) from parsing through chars list
-
 	public void tokenize(ArrayList<Character> chars) {
 		int anchor = 0;
 		for (int i = 0; i < chars.size(); i++) {
 			char c = chars.get(i);
 			// Start to form tokens only if the current char is not a whitespace
-			if (!Character.isWhitespace(c) && i+1<chars.size()) {
+			if (!Character.isWhitespace(c)) {
 				String currentword = "" + c;
 				// Case: when current character is a letter
 				if (Character.isLetter(c)) {
 					// Continue adding next characters to currentword until it hits either a white
 					// space or a special character
-					for (int j = i + 1; j < chars.size(); j++) {
-						anchor = j;
-						char nextc = chars.get(j);
-						// Only Append the nextc to current word if nextc is either a letter or digit
-						if (Character.isLetterOrDigit(nextc)) {
-							currentword += nextc;
-						} else {
-							j = chars.size();
+					boolean notletternotdigit = false;
+					if (i + 1 < chars.size()) {
+						for (int j = i + 1; j < chars.size(); j++) {
+							anchor = j;
+							char nextc = chars.get(j);
+							// Only Append the nextc to current word if nextc is either a letter or digit
+							if (Character.isLetterOrDigit(nextc)) {
+								currentword += nextc;
+							} else {
+								notletternotdigit = true;
+								j = chars.size();
+							}
+						}
+						// Only roll back when the ending char of the current word is neither a digit or
+						// letter.
+						if (notletternotdigit) {
+							anchor--; // 0
 						}
 					}
-					anchor--;
 				}
 				// Case: when current character is a digit
 				else if (Character.isDigit(c)) {
 					// Continue adding next characters to currentword until it hits either a white
 					// space or a special character
-					for (int j = i + 1; j < chars.size(); j++) {
-						anchor = j;
-						char nextc = chars.get(j);
-						// Only append if the nextc is a digit
-						if (Character.isDigit(nextc)) {
-							currentword += nextc;
-						} else {
-							j = chars.size();
+					boolean notdigit = false;
+					if (i + 1 < chars.size()) {
+						for (int j = i + 1; j < chars.size(); j++) {
+							anchor = j;
+							char nextc = chars.get(j);
+							// Only append if the nextc is a digit
+							if (Character.isDigit(nextc)) {
+								currentword += nextc;
+							} else {
+								notdigit = true;
+								j = chars.size();
+							}
+						}
+						if (notdigit) {
+							anchor--;
 						}
 					}
-					anchor--;
 				}
-
 				// Case: when current character is a special character
 				else if (special.indexOf(c) != -1) {
 					// Check if next index is out of bound.
 					int j = i + 1;
 					if (j < chars.size()) {
 						anchor = j;
-						// System.out.println(anchor);
 						char nextc = chars.get(j);
 						if (c == '=' && nextc == '=') {
 							currentword += nextc;
@@ -88,17 +99,19 @@ class Scanner {
 						} else {
 							anchor--;
 						}
-					}// Case: when current character is anillegal character
-					else {
-						anchor=i+1;
-						this.errortoken += c;
-						currentword = "error";
+					} else {
+						anchor = i;
 					}
+				}
+				// // Case: when current character is anillegal character
+				else {
+					anchor = i + 1;
+					this.errortoken += c;
+					currentword = "error";
 				}
 				this.tokens.add(currentword);
 				// Update i with anchor
 				i = anchor;
-
 			}
 		}
 		tokens.add("eof");
@@ -190,7 +203,13 @@ class Scanner {
 			default:
 				// If the current word starts with digits, it will always result in const.
 				if (Character.isDigit(current.charAt(0))) {
-					return Core.CONST;
+					int maxInt = Integer.MAX_VALUE;
+					if (Long.parseLong(current) > maxInt) {
+						this.errortoken = current;
+						return Core.ERROR;
+					} else {
+						return Core.CONST;
+					}
 				} else {
 					return Core.ID;
 				}
