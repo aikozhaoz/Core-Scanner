@@ -203,7 +203,7 @@ class Scanner {
 			default:
 				// If the current word starts with digits, it will always result in const.
 				if (Character.isDigit(current.charAt(0))) {
-					int maxInt = Integer.MAX_VALUE;
+					int maxInt = 1023;
 					if (Long.parseLong(current) > maxInt) {
 						this.errortoken = current;
 						return Core.ERROR;
