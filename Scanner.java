@@ -10,14 +10,20 @@ class Scanner {
 	private String special = ";(),=!<+-*";
 	public String current = "";
 	public String errortoken = "";
+	private Set<String> keywords = new HashSet<String>(
+			Arrays.asList("program", "begin", "end", "new", "int", "define", "endfunc", "class", "extends", "endclass",
+					"if", "then", "else", "while", "endwhile", "endif", "or", "input", "output", "ref"));
 
 	// Constructor should open the file and find the first token
 	Scanner(String filename) {
 		String currentLine = null;
 		try {
 			// Read input stream via filename.
+			// This reader reads each token (INCLUDING new line char)
 			BufferedReader reader = new BufferedReader(new FileReader(filename));
-			// Read through the file and store all valid chars into chars list.
+			// Read through the file line by line and store all valid chars into chars list.
+			// Read through the file line by line will not read new line char.
+			// It will skip new line char and jump to the first char of next line instead.
 			while ((currentLine = reader.readLine()) != null) {
 				for (int i = 0; i < currentLine.length(); i++) {
 					char currentChar = currentLine.charAt(i);
@@ -48,8 +54,20 @@ class Scanner {
 						for (int j = i + 1; j < chars.size(); j++) {
 							anchor = j;
 							char nextc = chars.get(j);
+							// Condition to for keyword greedy approach.
+							// Only apply if currentword = end, since this is the only case we need keyword greedy approach.
+							if (currentword.equals("end") && (nextc == 'f' || nextc == 'c' || nextc == 'w' || nextc == 'i')) {
+								currentword += nextc;
+							}
+							// Check if currentword is already a keyword.
+							// If so, stop the for Loop.
+							// Since it is an if else if logic, if the currentword == end, it would not go to this if else block any more.
+							else if (keywords.contains(currentword)) {
+								anchor = j - 1;
+								j = chars.size();
+							}
 							// Only Append the nextc to current word if nextc is either a letter or digit
-							if (Character.isLetterOrDigit(nextc)) {
+							else if (Character.isLetterOrDigit(nextc)) {
 								currentword += nextc;
 							} else {
 								notletternotdigit = true;
@@ -228,4 +246,14 @@ class Scanner {
 		return Integer.parseInt(this.current);
 	}
 
+	// Return if the current token == given Core c.
+	// Then dequeue tokens
+	public boolean expectedToken(Core c) {
+		boolean result = false;
+		if (this.currentToken() == c) {
+			result = true;
+			this.nextToken();
+		}
+		return result;
+	}
 }
